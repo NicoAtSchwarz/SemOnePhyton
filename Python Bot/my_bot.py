@@ -1,11 +1,9 @@
 import discord
 
-bot = discord.Client()
+bot = discord.Client(intents=discord.Intents.default())
 
-# run client
-with open('token.txt') as file:
-    token = file.read().strip()
-
+with open("token.txt", "r") as file:
+    token = file.readline().strip()
 
 dcIntents = discord.Intents.default()
 dcIntents.members = True
