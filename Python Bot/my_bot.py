@@ -1,13 +1,15 @@
 import discord
+import os
 
 bot = discord.Client(intents=discord.Intents.default())
+os.chdir('V:\Download\programmieren1_Bot_py\code py bot\SemOnePhyton\Python Bot')
 
-with open("token.txt", "r") as file:
-    token = file.readline().strip()
+with open('token.txt') as file:
+    token = file.readline()
 
-dcIntents = discord.Intents.default()
-dcIntents.members = True
+intentsDC = discord.Intents.default()
+intentsDC.members = True
 
-bot = discord.Client(intents=dcIntents)
+bot = discord.Client(intents=intentsDC)
 
 bot.run(token)
