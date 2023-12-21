@@ -4,7 +4,7 @@ bot = discord.Client()
 
 # run client
 with open('token.txt') as file:
-    token = file.read().strip()
+    token = file.readlines()
 
 
 dcIntents = discord.Intents.default()
