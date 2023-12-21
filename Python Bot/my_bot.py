@@ -10,7 +10,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 with open('token.txt') as file:
-    token = file.readline()
+    token = file.readlines()
 
 helloGIF = 'https://tenor.com/view/hi-hello-gif-1314135106863776295'
 chipiGIF = 'https://tenor.com/view/chipi-chipi-chapa-chapa-cat-rainbow-cat-mizahcimtr1-gif-12949221109051297325'

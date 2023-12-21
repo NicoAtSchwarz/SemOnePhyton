@@ -6,9 +6,9 @@ symbol2= "65"
 text1= "Hallo"
 text2= "Welt"
 
-print(Zahl + zahl2)
-print(Zahl + int(doubleZahl))
-print(Zahl + doubleZahl)
-print(symbol1 + symbol2)
-print(text1 + text2)
-print(text1 + str(Zahl))
+print("Zahl + Zahl: ", Zahl + zahl2)
+print("intZahl + convDoubleZahl: ", Zahl + int(doubleZahl))
+print("Zahl + DoubleZahl: ", Zahl + doubleZahl)
+print("Symbol + Symbol: ", symbol1 + symbol2)
+print("Text + Text: ", text1 + text2)
+print("Text + convStrZahl: ", text1 + str(Zahl))
