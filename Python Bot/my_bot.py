@@ -2,7 +2,9 @@ import discord
 import os
 from discord.ext import commands
 
+print("Speicherort", os.chdir)
 os.chdir(os.getcwd() + '\Python Bot')
+print("Speicherort", os.chdir)
 
 intents = discord.Intents.all()
 intents.message_content = True
