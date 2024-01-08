@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import os
 from discord.ext import commands
@@ -14,6 +15,8 @@ with open('token.txt') as file:
     token = file.readlines()
 
 helloGIF = 'https://tenor.com/view/hi-hello-gif-1314135106863776295'
+chipiGIF = 'https://tenor.com/view/chipi-chipi-chapa-chapa-cat-rainbow-cat-mizahcimtr1-gif-12949221109051297325'
+sendHelpMSG = "**Current Commands \n'Hello [bot]' / 'Hallo' - greet the bot \n'dance cat' / 'chipi' / 'chippi'"
 
 @bot.event
 async def on_startup():
@@ -24,14 +27,25 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    print(f'Received message from {message.author}: {message.content} ---- {message.channel}')
+    print(f'{message.author}: {message.content} ---- {message.channel}')
 
-    if message.content.lower().startswith('hello bot'):
-        print("Hello bot")
-        await message.channel.send('Hello, human!')
+    if "help" in message.content.lower():
+        await message.reply(sendHelpMSG)
+    
+    if "hello" in message.content.lower() or "hallo" in message.content.lower():
+        if message.content.lower().startswith('hello bot'):
+            print("Hello bot")
+            await message.channel.send('Hello, human!')
+            return
+        else:
+            await message.channel.send(helloGIF)
+            print("Hallo oder Hello!")
+            return
 
-    if "hello" or "hallo" in message.content.lower().lstrip():
-        print("Hallo oder Hello!")
-        await message.channel.send(helloGIF)
+    if "dancecat" in message.content.lower().replace(" ", "") or "chippi" in message.content.lower() or "chipi" in message.content.lower():
+        await message.channel.send(chipiGIF)
+        await asyncio.sleep(3)
+        await message.delete()
+        return
 
 bot.run(token)
