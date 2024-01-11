@@ -3,9 +3,9 @@ import discord
 import os
 from discord.ext import commands
 
-print("Speicherort", os.chdir)
-os.chdir(os.getcwd() + '\Python Bot')
-print("Speicherort", os.chdir)
+print("---Speicherort vorher", os.getcwd())
+os.chdir(os.getcwd() + '\SemOnePhyton\Python Bot')
+print("---Speicherort nachher", os.getcwd())
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -48,4 +48,4 @@ async def on_message(message: discord.Message):
         await message.delete()
         return
 
-bot.run(token)
+bot.run(token[0])
