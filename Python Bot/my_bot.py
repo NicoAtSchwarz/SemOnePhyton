@@ -4,7 +4,7 @@ import os
 from discord.ext import commands
 
 print("---Speicherort vorher", os.getcwd())
-os.chdir(os.getcwd() + '\SemOnePhyton\Python Bot')
+os.chdir(os.getcwd() + '\Python Bot')
 print("---Speicherort nachher", os.getcwd())
 
 intents = discord.Intents.all()
