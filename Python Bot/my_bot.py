@@ -7,12 +7,16 @@ print("---Speicherort vorher", os.getcwd())
 os.chdir(os.getcwd() + '\Python Bot')
 print("---Speicherort nachher", os.getcwd())
 
+with open('token.txt') as file:
+    token = file.readlines()
+
 intents = discord.Intents.all()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-with open('token.txt') as file:
-    token = file.readlines()
+@bot.event
+async def on_ready():
+    print(f'{bot.user} is now purring!')
 
 helloGIF = 'https://tenor.com/view/hi-hello-gif-1314135106863776295'
 chipiGIF = 'https://tenor.com/view/chipi-chipi-chapa-chapa-cat-rainbow-cat-mizahcimtr1-gif-12949221109051297325'
@@ -24,10 +28,6 @@ loveGroguGIF = 'https://tenor.com/view/star-wars-baby-yoda-cute-the-mandalorian-
 sleepGroguGIF = 'https://tenor.com/view/the-mandalorian-grogu-sleeping-baby-yoda-grogu-sleeping-gif-19354118'
 
 sendHelpMSG = "**Current Commands** \n'Hello [bot]' / 'Hallo' - greet the bot \n'dance cat' / 'chipi' / 'chippi'"
-
-@bot.event
-async def on_startup():
-    print('The bot has started!')
 
 @bot.event
 async def on_message(message: discord.Message):
@@ -79,3 +79,10 @@ async def on_message(message: discord.Message):
         return
     
     bot.run(token[0])
+
+    #main entry point
+def main()-> None:
+    bot.run(token[0])
+
+if __name__ == '__main__':
+    main()
