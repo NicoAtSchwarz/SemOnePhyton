@@ -77,12 +77,5 @@ async def on_message(message: discord.Message):
     if "bye" in messageLow or "tschüss" in messageLow or "tschuss" in messageLow or "tschau" in messageLow:
         await message.channel.send(byeGroguGIF)
         return
-    
-    bot.run(token[0])
 
-    #main entry point
-def main()-> None:
-    bot.run(token[0])
-
-if __name__ == '__main__':
-    main()
+bot.run(token[0])
