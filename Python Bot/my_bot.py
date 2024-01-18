@@ -53,7 +53,7 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    print(f'{message.author}: {message.content} ---- {message.channel}')
+    print(f'{message.author}: {message.content} ---- {message.channel} - {message.guild}')
 
     messageLow = message.content.lower()
     messageLowStripped = messageLow.replace(" ", "")
@@ -111,7 +111,7 @@ async def say(interaction: discord.Interaction, thing_to_say: str):
 @bot.tree.command (name="suggest")
 @app_commands.describe (suggestion = "What is your suggestion?")
 async def suggestion(interaction: discord.Interaction, suggestion: str):
-    print(f'User: {interaction.user.name}, Suggestion: {suggestion}')
+    print(f'User: {interaction.user.name}, Suggestion: {suggestion}, Guild: {interaction.guild}, Channel: {interaction.channel}')
     await interaction.response.send_message (f'Add suggestion: {suggestion}', ephemeral=True)
     await interaction.channel.send (f'suggestion: {suggestion}')
 
