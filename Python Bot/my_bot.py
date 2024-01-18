@@ -43,7 +43,7 @@ mainColour = 0xa2c188
 async def hello(interaction: discord.Interaction):
     command1 = "- `Hello [bot]` / `Hallo` - greet the bot"
     command2 = "- reacting to following words: \n>>> `dance cat` / `chipi` / `chippi` / `lol` / `dance` / `hug` / `love` / `baby yoda` / \n`baby-yoda` / `bye` / `tschüss` / `tschuss` / `tschau`"
-    commandSlash = "- `hello` / `slash` / `say [msg you wana tell]`"
+    commandSlash = "- `hello` / `slash` / `say [msg you wana tell]` / `suggest [suggestion]`"
     embedHelp=discord.Embed(title="Current Commands", description=f"{command1} \n{command2}", color=mainColour)
     embedHelp.add_field(name="slash commands", value=commandSlash, inline=True)
     await interaction.response.send_message(embed=embedHelp, ephemeral=True) #privat Msg in channel
@@ -73,7 +73,6 @@ async def on_message(message: discord.Message):
             return
         else:
             await message.channel.send(helloGIF); return
-
     if "dancecat" in messageLowStripped or "chippi" in messageLow or "chipi" in messageLow:
         await message.channel.send(chipiGIF)
         return
@@ -105,8 +104,15 @@ async def test(interaction: discord.Interaction):
     await interaction.response.send_message(f"Hey {interaction.user.display_name}! You discovered a slash command!", ephemeral=False) #public Msg channel 
 
 @bot.tree.command (name="say")
-@app_commands.describe (thing_to_say = "What should I say?")
+@app_commands.describe (thing_to_say = "What should I say for you?")
 async def say(interaction: discord.Interaction, thing_to_say: str):
     await interaction.response.send_message (f" {interaction.user.name}: {thing_to_say}")
+
+@bot.tree.command (name="suggest")
+@app_commands.describe (suggestion = "What is your suggestion?")
+async def suggestion(interaction: discord.Interaction, suggestion: str):
+    print(f'User: {interaction.user.name}, Suggestion: {suggestion}')
+    await interaction.response.send_message (f'Add suggestion: {suggestion}', ephemeral=True)
+    await interaction.channel.send (f'suggestion: {suggestion}')
 
 bot.run(token[0])
