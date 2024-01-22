@@ -12,7 +12,7 @@ with open('token.txt') as file:
 
 intents = discord.Intents.all()
 intents.message_content = True
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='g!', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -40,43 +40,28 @@ async def on_message(message: discord.Message):
     messageLowStripped = messageLow.replace(" ", "")
 
     if "help" in messageLow:
-        await message.reply(sendHelpMSG)
-        return
+        await message.reply(sendHelpMSG); return
     
     if "hello" in messageLow or "hallo" in messageLow:
         if messageLow.startswith('hello bot'):
-            print("Hello bot")
             await message.channel.send('Hello, human!')
-            await message.channel.send(helloGIF)
-            return
+            await message.channel.send(helloGIF); return
         else:
-            await message.channel.send(helloGIF)
-            print("Hallo oder Hello!")
-            return
+            await message.channel.send(helloGIF); return
 
     if "dancecat" in messageLowStripped or "chippi" in messageLow or "chipi" in messageLow:
-        await message.channel.send(chipiGIF)
-        return
+        await message.channel.send(chipiGIF); return
     
-    if "lol" in messageLow:
-        await message.channel.send(ohGroguGIF)
-        return
+    if "lol" in messageLow: await message.channel.send(ohGroguGIF); return
     
     if "dance" in messageLow:
-        await message.channel.send(dancingDraginGIF)
-        return
+        await message.channel.send(dancingDraginGIF); return
     
-    if "hug" in messageLow:
-        await message.channel.send(hugGroguGIF)
-        return
+    if "hug" in messageLow: await message.channel.send(hugGroguGIF); return
 
-    if "love" in messageLow:
-        await message.channel.send(loveGroguGIF)
-        return
+    if "love" in messageLow:await message.channel.send(loveGroguGIF); return
     
-    if "bye" in messageLow or "tschüss" in messageLow or "tschuss" in messageLow or "tschau" in messageLow:
-        await message.channel.send(byeGroguGIF)
-        return
+    if "bye" in messageLow or "tschüss" in messageLow or "tschuss" in messageLow or "tschau" in messageLow: await message.channel.send(byeGroguGIF); return
     
     bot.run(token[0])
 
