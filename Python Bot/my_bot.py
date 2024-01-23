@@ -40,14 +40,23 @@ sleepGroguGIF = 'https://tenor.com/view/the-mandalorian-grogu-sleeping-baby-yoda
 doneGIF = "https://cdn.discordapp.com/attachments/1029502275208630414/1032604402596466748/haken.gif?ex=65bb754a&is=65a9004a&hm=9ff350aef78e2b974dea2ff197082d116e21f0dd076b8f0b9d0ccb045721547a&"
 mainColour = 0xa2c188
 
+greetCommands = "- `Hello [bot]` / `Hallo [bot]` - greet the bot"
+reactingWords = ["dance cat"]
+wordCommands = "- reacting to following words: \n>>> `dance cat` / `chipi` / `chippi` / `baby yoda` / \n`baby-yoda`"
+
+slashWords = ["bye", "chipi", "dance", "hello", "hug", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", ]
+slashCommands = "- `help`:"
+for x in slashWords:
+    slashCommands += f" `{x}` /"
+
+print("vorher:", slashCommands)
+slashCommands = slashCommands[:-2]
+print("nachher:", slashCommands)
 
 @bot.tree.command (name="help", description="Help with everything")
 async def help(interaction: discord.Interaction):
-    command1 = "- `Hello [bot]` / `Hallo [bot]` - greet the bot"
-    command2 = "- reacting to following words: \n>>> `dance cat` / `chipi` / `chippi` / `baby yoda` / \n`baby-yoda`"
-    commandSlash = " `help`: `bye` / `chipi` / `dance` / `hello` / `hug` / `lol` / `love` / `say [msg you wana tell]` / `slash` / `suggest [suggestion]`"
-    embedHelp=discord.Embed(title="Current Commands", description=f"{command1} \n{command2}", color=mainColour)
-    embedHelp.add_field(name="slash commands", value=commandSlash, inline=True)
+    embedHelp=discord.Embed(title="Current Commands", description=f"{greetCommands} \n{wordCommands}", color=mainColour)
+    embedHelp.add_field(name="slash commands", value=slashCommands, inline=True)
     await interaction.response.send_message(embed=embedHelp, ephemeral=True) #privat Msg in channel
 
 
@@ -62,10 +71,10 @@ async def on_message(message: discord.Message):
     messageLowStripped = messageLow.replace(" ", "")
 
     if "g!help" in messageLow:
-        command1 = "- `Hello [bot]` / `Hallo [bot]` - greet the bot"
+        greetCommands = "- `Hello [bot]` / `Hallo [bot]` - greet the bot"
         command2 = "- reacting to following words: \n>>> `dance cat` / `chipi` / `chippi` / `baby yoda` / \n`baby-yoda`"
         commandSlash = " `help`: `bye` / `hello` / `chipi` / `dance` / `hello` / `hug` / `lol` / `love` / `say [msg you wana tell]` / `slash` / `suggest [suggestion]`"
-        embedHelp=discord.Embed(title="Current Commands", description=f"{command1} \n{command2}", color=mainColour)
+        embedHelp=discord.Embed(title="Current Commands", description=f"{greetCommands} \n{command2}", color=mainColour)
         embedHelp.add_field(name="slash commands", value=commandSlash, inline=True)
         await message.channel.send(embed=embedHelp); return
     
