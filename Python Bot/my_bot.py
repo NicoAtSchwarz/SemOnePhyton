@@ -42,20 +42,22 @@ mainColour = 0xa2c188
 
 greetCommands = "- `Hello [bot]` / `Hallo [bot]` - greet the bot"
 reactingWords = ["dance cat", "chipi", "chippi", "baby yoda", "baby-yoda"]
+reactingWords.sort
 wordCommands = "- reacting to following words: \n>>> "
 for x in reactingWords:
     wordCommands += f" `{x}` /"
-print("vorher:", wordCommands)
+#print("vorher:", wordCommands)
 wordCommands = wordCommands[:-2]
-print("nachher:", wordCommands)
+#print("nachher:", wordCommands)
 
 slashWords = ["bye", "chipi", "dance", "hello", "hug", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", ]
+slashWords.sort
 slashCommands = "- `help`:"
 for x in slashWords:
     slashCommands += f" `{x}` /"
-print("vorher:", slashCommands)
+#print("vorher:", slashCommands)
 slashCommands = slashCommands[:-2]
-print("nachher:", slashCommands)
+#print("nachher:", slashCommands)
 
 @bot.tree.command (name="help", description="Help with everything")
 async def help(interaction: discord.Interaction):
@@ -69,7 +71,7 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    print(f'{message.author}: {message.content} ---- {message.channel} - {message.guild}')
+    print(f'{message.author}: {message.content} ---- #{message.channel} -+- {message.guild}')
 
     messageLow = message.content.lower()
     messageLowStripped = messageLow.replace(" ", "")
@@ -127,6 +129,7 @@ async def love(interaction: discord.Interaction):
 @bot.tree.command (name="say", description="Say me, what I should tell the others")
 @app_commands.describe (thing_to_say = "What should I say for you?")
 async def say(interaction: discord.Interaction, thing_to_say: str):
+    print(f'User: {interaction.user.name}, Say: {thing_to_say}, Guild: {interaction.guild}, Channel: {interaction.channel}')
     await interaction.response.send_message (f" {interaction.user.name}: {thing_to_say}")
 
 @bot.tree.command (name="slash", description="Explore slash commands")
