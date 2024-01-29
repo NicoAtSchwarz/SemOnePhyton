@@ -143,4 +143,8 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
     await interaction.response.send_message (f'Add suggestion: {suggestion}', ephemeral=True)
     await interaction.channel.send (f'suggestion: {suggestion}')
 
+@bot.tree.command(name="id", description="Get your ID")
+async def userid(interaction: discord.Interaction, member: discord.Member):
+    await interaction.response.send_message(f"member.id: {member}")
+
 bot.run(token[0])
