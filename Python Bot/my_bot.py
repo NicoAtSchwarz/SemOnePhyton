@@ -147,4 +147,9 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
 async def userid(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(f"member.id: {member}")
 
+@bot.tree.command(name="dm", description="Send a DM")
+async def dm(interaction: discord.Interaction, member: discord.Member):
+    await interaction.response.send_message(f"Message to {member.global_name}: {interaction.user.global_name} sends you a: `Hello`")
+    await member.send(f"{interaction.user.global_name} sends you a: `Hello`")
+
 bot.run(token[0])
