@@ -17,7 +17,7 @@ bot = commands.Bot(command_prefix='g!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f'{bot.user} is now purring!')
+    print(f'{bot.user} is now online!')
     status = discord.CustomActivity("g!help or /help")
     await bot.change_presence(status=discord.Status.online, activity=status)
     print(f"Status set to: {status}!")
@@ -50,7 +50,7 @@ for x in reactingWords:
 wordCommands = wordCommands[:-2]
 #print("nachher:", wordCommands)
 
-slashWords = ["bye", "chipi", "dance", "hello", "hug", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", ]
+slashWords = ["bye", "chipi", "dance", "hello", "hug", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", "id [member]", "dm-hello [member]", "whisper [member] [message]"]
 slashWords.sort
 slashCommands = "- `help`:"
 for x in slashWords:
@@ -143,13 +143,20 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
     await interaction.response.send_message (f'Add suggestion: {suggestion}', ephemeral=True)
     await interaction.channel.send (f'suggestion: {suggestion}')
 
-@bot.tree.command(name="id", description="Get your ID")
+@bot.tree.command(name="id", description="Get the ID of a member")
 async def userid(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(f"member.id: {member}")
 
-@bot.tree.command(name="dm", description="Send a DM")
+@bot.tree.command(name="dm-hello", description="Send a DM")
 async def dm(interaction: discord.Interaction, member: discord.Member):
-    await interaction.response.send_message(f"Message to {member.global_name}: {interaction.user.global_name} sends you a: `Hello`")
-    await member.send(f"{interaction.user.global_name} sends you a: `Hello`")
+    messageSend = f"{interaction.user.global_name} sends you a: `Hello`"
+    await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
+    await member.send(f"{messageSend}")
+
+@bot.tree.command(name="whisper", description="Send a DM to somebody")
+async def dm(interaction: discord.Interaction, member: discord.Member, whisper :str):
+    messageSend = f"{interaction.user.global_name} whispers you: {whisper}"
+    await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
+    await member.send(f"{messageSend}")
 
 bot.run(token[0])
