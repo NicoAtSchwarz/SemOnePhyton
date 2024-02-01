@@ -50,7 +50,7 @@ for x in reactingWords:
 wordCommands = wordCommands[:-2]
 #print("nachher:", wordCommands)
 
-slashWords = ["bye", "chipi", "dance", "hello", "hug", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", "id [member]", "dm-hello [member]", "whisper [member] [message]"]
+slashWords = ["bye", "chipi", "dance", "dm-hello [member]", "hello", "hug", "id [member]", "lol", "love", "say [msg you wana tell]", "slash", "suggest [suggestion]", "whisper [member] [message]"]
 slashWords.sort
 slashCommands = "- `help`:"
 for x in slashWords:
@@ -145,7 +145,7 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
 
 @bot.tree.command(name="id", description="Get the ID of a member")
 async def userid(interaction: discord.Interaction, member: discord.Member):
-    await interaction.response.send_message(f"member.id: {member}")
+    await interaction.response.send_message(f"ID of {member.global_name}: {member.id}")
 
 @bot.tree.command(name="dm-hello", description="Send a DM")
 async def dm(interaction: discord.Interaction, member: discord.Member):
