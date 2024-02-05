@@ -11,6 +11,17 @@ print("---Speicherort nachher", os.getcwd())
 with open('token.txt') as file:
     token = file.readlines()
 
+with open('log.txt') as file:
+    list = file.readlines()
+    logGuild = int(list[0])
+    print("logGuild: ", logGuild)
+    logChannel = int(list[1])
+    print("logChannel: ", logChannel)
+    logChannelDM = int(list[2]) #extraChannel
+    print("logChannelDM: ", logChannelDM)
+    creatorID = int(list[3]) 
+    print("creatorID: ", creatorID)
+       
 intents = discord.Intents.all()
 intents.message_content = True
 bot = commands.Bot(command_prefix='g!', intents=intents)
@@ -158,5 +169,36 @@ async def dm(interaction: discord.Interaction, member: discord.Member, whisper :
     messageSend = f"{interaction.user.global_name} whispers you: {whisper}"
     await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
     await member.send(f"{messageSend}")
+    await logMessage(f"{interaction.user.global_name} whisper to {member.global_name}: {whisper}")
+
+@bot.tree.command(name="dm-message", description="Send a Message to someone")
+async def dm(interaction: discord.Interaction, member: discord.User, message: str):
+    messageSend = f"{interaction.user.global_name} to you: {message}"
+    await interaction.response.send_message(messageSend, ephemeral=True)
+    await member.send(messageSend)
+    await logMessage(messageSend)
+
+async def logMessageDM(msg: str):
+    target_guild = bot.get_guild(logGuild)
+    if target_guild:
+        target_channel = target_guild.get_channel(logChannelDM)
+        if target_channel:
+            # Send the love message to the target channel
+            await target_channel.send(f"{msg}")
+        else:
+            print(f"Target channel with ID {logChannelDM} not found.")
+    else:
+        print(f"Target guild with ID {logGuild} not found.")
+async def logMessage(msg: str):
+    target_guild = bot.get_guild(logGuild)
+    if target_guild:
+        target_channel = target_guild.get_channel(logChannel)
+        if target_channel:
+            # Send the love message to the target channel
+            await target_channel.send(f"{msg}")
+        else:
+            print(f"Target channel with ID {logChannel} not found.")
+    else:
+        print(f"Target guild with ID {logGuild} not found.")
 
 bot.run(token[0])
