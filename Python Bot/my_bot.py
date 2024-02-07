@@ -15,11 +15,13 @@ with open('log.txt') as file:
     list = file.readlines()
     logGuild = int(list[0])
     print("logGuild: ", logGuild)
-    logChannel = int(list[1])
+    logChannel = int(list[1]) #general Channel
     print("logChannel: ", logChannel)
-    logChannelDM = int(list[2]) #extraChannel
+    logChannelDM = int(list[2]) #direktMsg Channel
     print("logChannelDM: ", logChannelDM)
-    creatorID = int(list[3]) 
+    logChannelMsg = int(list[3]) #Msg Channel
+    print("logChanneMsg: ", logChannelMsg)
+    creatorID = int(list[4]) #Creator ID
     print("creatorID: ", creatorID)
        
 intents = discord.Intents.all()
@@ -82,7 +84,7 @@ async def on_message(message: discord.Message):
     if message.author.bot:
         return
 
-    print(f'{message.author}: {message.content} ---- #{message.channel} -+- {message.guild}')
+    #(f'{message.author}: {message.content} ---- #{message.channel} -+- {message.guild}')
 
     messageLow = message.content.lower()
     messageLowStripped = messageLow.replace(" ", "")
@@ -154,7 +156,7 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
     await interaction.response.send_message (f'Add suggestion: {suggestion}', ephemeral=True)
     await interaction.channel.send (f'suggestion: {suggestion}')
 
-@bot.tree.command(name="id", description="Get the ID of a member")
+@bot.tree.command (name="id", description="Get the ID of a member")
 async def userid(interaction: discord.Interaction, member: discord.Member):
     await interaction.response.send_message(f"ID of {member.global_name}: {member.id}")
 
@@ -163,44 +165,22 @@ async def dm(interaction: discord.Interaction, member: discord.Member):
     messageSend = f"{interaction.user.global_name} sends you a: `Hello`"
     await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
     await member.send(f"{messageSend}")
+    await logMessage("DM", f"{interaction.user.global_name} sends a `Hello` to {member.global_name}.")
 
 @bot.tree.command(name="whisper", description="Send a DM to somebody")
 async def dm(interaction: discord.Interaction, member: discord.Member, whisper :str):
     messageSend = f"{interaction.user.global_name} whispers you: {whisper}"
     await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
     await member.send(f"{messageSend}")
-    await logMessage(f"{interaction.user.global_name} whisper to {member.global_name}: {whisper}")
+    await logMessage("", f"{interaction.user.global_name} whisper to {member.global_name}: {whisper}")
 
 @bot.tree.command(name="dm-message", description="Send a Message to someone")
 async def dm(interaction: discord.Interaction, member: discord.User, message: str):
     messageSend = f"{interaction.user.global_name} to you: {message}"
     await interaction.response.send_message(messageSend, ephemeral=True)
     await member.send(messageSend)
-    await logMessage(messageSend)
+    await logMessage("DM", messageSend)
 
-async def logMessageDM(msg: str):
-    target_guild = bot.get_guild(logGuild)
-    if target_guild:
-        target_channel = target_guild.get_channel(logChannelDM)
-        if target_channel:
-            # Send the love message to the target channel
-            await target_channel.send(f"{msg}")
-        else:
-            print(f"Target channel with ID {logChannelDM} not found.")
-    else:
-        print(f"Target guild with ID {logGuild} not found.")
-async def logMessage(msg: str):
-    target_guild = bot.get_guild(logGuild)
-    if target_guild:
-        target_channel = target_guild.get_channel(logChannel)
-        if target_channel:
-            # Send the love message to the target channel
-            await target_channel.send(f"{msg}")
-        else:
-            print(f"Target channel with ID {logChannel} not found.")
-    else:
-        print(f"Target guild with ID {logGuild} not found.")
-    
 @bot.tree.command(name="clear",description="Delete Messages automatically from the current channel")
 async def clear(interaction: discord.Interaction, number:int, member:discord.Member = None):
     if number > 50:
@@ -212,6 +192,31 @@ async def clear(interaction: discord.Interaction, number:int, member:discord.Mem
     else:
         await interaction.channel.purge(limit=number,check=check_)
     await interaction.response.send_message(f"Deleted: {number}, from this channel.", ephemeral=True)
-    await logChannel.send(f"Deleted: {number} Messages, from channel {interaction.channel} due to {interaction.user.global_name}.")
+    await logMessage("MSG", f"Deleted: {number} Messages, \nfrom channel \{interaction.channel} \ndue to \n{interaction.user.global_name}.")
+
+async def logMessage(channel:str, msg: str):
+    target_guild = bot.get_guild(logGuild)
+    if target_guild:
+        if channel == "DM":
+            target_channel = target_guild.get_channel(logChannelDM)
+        elif channel == "MSG":
+            target_channel = target_guild.get_channel(logChannelMsg)
+        else:
+            target_channel = target_guild.get_channel(logChannel)
+
+        if target_channel:
+            await target_channel.send(f"{msg}")
+        else:
+            print(f"Target channel with ID {logChannel} not found.")
+    else:
+        print(f"Target guild with ID {logGuild} not found.")
+    
+@bot.event
+async def on_message_delete(message: discord.Message):
+    await logMessage("MSG", f"Deleted: {message.content}, from channel {message.channel} due to {message.author.global_name}.")
+@bot.event
+async def on_message_edit(before: discord.Message, after: discord.Message):
+    print("Message edited!")
+    await logMessage("MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name}.")
 
 bot.run(token[0])
