@@ -200,5 +200,18 @@ async def logMessage(msg: str):
             print(f"Target channel with ID {logChannel} not found.")
     else:
         print(f"Target guild with ID {logGuild} not found.")
+    
+@bot.tree.command(name="clear",description="Delete Messages automatically from the current channel")
+async def clear(interaction: discord.Interaction, number:int, member:discord.Member = None):
+    if number > 50:
+        number = 50
+    def check_(m):
+        return m.author == member
+    if not member:
+        await interaction.channel.purge(limit=number)
+    else:
+        await interaction.channel.purge(limit=number,check=check_)
+    await interaction.response.send_message(f"Deleted: {number}, from this channel.", ephemeral=True)
+    await logChannel.send(f"Deleted: {number} Messages, from channel {interaction.channel} due to {interaction.user.global_name}.")
 
 bot.run(token[0])
