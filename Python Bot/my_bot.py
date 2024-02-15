@@ -23,6 +23,11 @@ with open('log.txt') as file:
     print("logChanneMsg: ", logChannelMsg)
     creatorID = int(list[4]) #Creator ID
     print("creatorID: ", creatorID)
+
+with open('guild.whitelist.txt') as file:
+    guildWhitelist = file.readlines()
+    guildWhitelist = [int(x) for x in guildWhitelist]
+    print("guildWhitelist: ", guildWhitelist)
        
 intents = discord.Intents.all()
 intents.message_content = True
@@ -165,21 +170,21 @@ async def dm(interaction: discord.Interaction, member: discord.Member):
     messageSend = f"{interaction.user.global_name} sends you a: `Hello`"
     await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
     await member.send(f"{messageSend}")
-    await logMessage("DM", f"{interaction.user.global_name} sends a `Hello` to {member.global_name}.")
+    await logMessage(interaction.guild.id, "DM", f"{interaction.user.global_name} sends a `Hello` to {member.global_name}.")
 
 @bot.tree.command(name="whisper", description="Send a DM to somebody")
 async def dm(interaction: discord.Interaction, member: discord.Member, whisper :str):
     messageSend = f"{interaction.user.global_name} whispers you: {whisper}"
     await interaction.response.send_message(f"Message to {member.global_name}: {messageSend}", ephemeral=True)
     await member.send(f"{messageSend}")
-    await logMessage("", f"{interaction.user.global_name} whisper to {member.global_name}: {whisper}")
+    await logMessage(interaction.guild.id, "", f"{interaction.user.global_name} whisper to {member.global_name}: {whisper}")
 
 @bot.tree.command(name="dm-message", description="Send a Message to someone")
 async def dm(interaction: discord.Interaction, member: discord.User, message: str):
     messageSend = f"{interaction.user.global_name} to you: {message}"
     await interaction.response.send_message(messageSend, ephemeral=True)
     await member.send(messageSend)
-    await logMessage("DM", messageSend)
+    await logMessage(interaction.guild.id, "DM", messageSend)
 
 @bot.tree.command(name="clear",description="Delete Messages automatically from the current channel")
 async def clear(interaction: discord.Interaction, number:int, member:discord.Member = None):
@@ -192,9 +197,13 @@ async def clear(interaction: discord.Interaction, number:int, member:discord.Mem
     else:
         await interaction.channel.purge(limit=number,check=check_)
     await interaction.response.send_message(f"Deleted: {number}, from this channel.", ephemeral=True)
-    await logMessage("MSG", f"Deleted: {number} Messages, \nfrom channel \{interaction.channel} \ndue to \n{interaction.user.global_name}.")
+    await logMessage(interaction.guild.id, "MSG", f"Deleted: {number} Messages, \nfrom channel \{interaction.channel} \ndue to \n{interaction.user.global_name}.")
 
-async def logMessage(channel:str, msg: str):
+async def logMessage(guildID, channel:str, msg: str):
+    print(f"Logging message: {msg} -- Guild: {guildID} -- Channel: {channel}")
+    if guildID not in guildWhitelist:
+        return
+    print("Guild is in whitelist.")
     target_guild = bot.get_guild(logGuild)
     if target_guild:
         if channel == "DM":
@@ -213,10 +222,10 @@ async def logMessage(channel:str, msg: str):
     
 @bot.event
 async def on_message_delete(message: discord.Message):
-    await logMessage("MSG", f"Deleted: {message.content}, from channel {message.channel} due to {message.author.global_name}.")
+    await logMessage(message.guild.id, "MSG", f"Deleted: {message.content}, from channel {message.channel} due to {message.author.global_name}.")
 @bot.event
 async def on_message_edit(before: discord.Message, after: discord.Message):
     print("Message edited!")
-    await logMessage("MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name}.")
+    await logMessage(before.guild.id, "MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name}.")
 
 bot.run(token[0])
