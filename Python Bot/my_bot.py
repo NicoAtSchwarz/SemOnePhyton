@@ -1,4 +1,3 @@
-import asyncio
 import discord
 import os
 from discord.ext import commands
@@ -21,7 +20,9 @@ with open('log.txt') as file:
     print("logChannelDM: ", logChannelDM)
     logChannelMsg = int(list[3]) #Msg Channel
     print("logChanneMsg: ", logChannelMsg)
-    creatorID = int(list[4]) #Creator ID
+    logChannelMember = int(list[4]) #Member Channel
+    print("logChannelMember: ", logChannelMember)
+    creatorID = int(list[5]) #Creator ID
     print("creatorID: ", creatorID)
 
 with open('guild.whitelist.txt') as file:
@@ -210,6 +211,8 @@ async def logMessage(guildID, channel:str, msg: str):
             target_channel = target_guild.get_channel(logChannelDM)
         elif channel == "MSG":
             target_channel = target_guild.get_channel(logChannelMsg)
+        elif channel == "USER":
+            target_channel = target_guild.get_channel(logChannelMember)
         else:
             target_channel = target_guild.get_channel(logChannel)
 
@@ -227,5 +230,14 @@ async def on_message_delete(message: discord.Message):
 async def on_message_edit(before: discord.Message, after: discord.Message):
     print("Message edited!")
     await logMessage(before.guild.id, "MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name}.")
+@bot.event
+async def on_member_join(member: discord.Member):
+    await logMessage(member.guild.id, "USER", f"{member.global_name} joined the server.")
+@bot.event
+async def on_member_remove(member: discord.Member):
+    await logMessage(member.guild.id, "USER", f"{member.global_name} left the server.")
+@bot.event
+async def on_member_update(before: discord.Member, after: discord.Member):
+    await logMessage(before.guild.id, "USER", f"{before.global_name} changed to {after.global_name}.")
 
 bot.run(token[0])
