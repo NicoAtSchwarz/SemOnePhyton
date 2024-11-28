@@ -25,7 +25,7 @@ with open('guild.whitelist.txt') as file:
     guildWhitelist = file.readlines()
     guildWhitelist = [int(x) for x in guildWhitelist]
     print("guildWhitelist: ", guildWhitelist)
-       
+
 intents = discord.Intents.all()
 intents.message_content = True
 bot = commands.Bot(command_prefix='g!', intents=intents)
