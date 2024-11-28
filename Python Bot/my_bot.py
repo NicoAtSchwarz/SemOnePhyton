@@ -1,5 +1,5 @@
 import asyncio
-import discord
+import discord #Python 3.11.3 needed
 import os
 from discord.ext import commands
 from discord import app_commands
@@ -14,26 +14,32 @@ with open('token.txt') as file:
 with open('log.txt') as file:
     list = file.readlines()
     logGuild = int(list[0])
-    print("logGuild: ", logGuild)
     logChannel = int(list[1]) #general Channel
-    print("logChannel: ", logChannel)
     logChannelDM = int(list[2]) #direktMsg Channel
-    print("logChannelDM: ", logChannelDM)
     logChannelMsg = int(list[3]) #Msg Channel
-    print("logChanneMsg: ", logChannelMsg)
     logChannelMember = int(list[4]) #Member Channel
-    print("logChannelMember: ", logChannelMember)
     creatorID = int(list[5]) #Creator ID
-    print("creatorID: ", creatorID)
-       
 intents = discord.Intents.all()
 intents.message_content = True
 bot = commands.Bot(command_prefix='g!', intents=intents)
 
+async def print_log_info():
+    guild = await bot.fetch_guild(logGuild)
+    user = bot.get_user(creatorID)
+
+    print("logGuild: ", logGuild, guild.name)
+    print("logChannel: ", logChannel, bot.get_channel(logChannel).name)
+    print("logChannelDM: ", logChannelDM, bot.get_channel(logChannelDM).name)
+    print("logChanneMsg: ", logChannelMsg, bot.get_channel(logChannelMsg).name)
+    print("logChannelMember: ", logChannelMember, bot.get_channel(logChannelMember).name)
+    print("creatorID: ", creatorID, user.name)
+
 @bot.event
 async def on_ready():
+    await print_log_info()
     print(f'{bot.user} is now online!')
-    status = discord.CustomActivity("g!help or /help")
+    #status = discord.CustomActivity("g!help or /help")
+    status = discord.CustomActivity("teste meine slash commands")
     await bot.change_presence(status=discord.Status.online, activity=status)
     print(f"Status set to: {status}!")
 
@@ -160,7 +166,7 @@ async def suggestion(interaction: discord.Interaction, suggestion: str):
 
 @bot.tree.command (name="id", description="Get the ID of a member")
 async def userid(interaction: discord.Interaction, member: discord.Member):
-    await interaction.response.send_message(f"ID of {member.global_name}: {member.id}")
+    await interaction.response.send_message(f"ID of {member.global_name}: {member.id}", ephemeral=True)
 
 @bot.tree.command(name="dm-hello", description="Send a DM")
 async def dm(interaction: discord.Interaction, member: discord.Member):
@@ -196,7 +202,9 @@ async def clear(interaction: discord.Interaction, number:int, member:discord.Mem
     await interaction.response.send_message(f"Deleted: {number}, from this channel.", ephemeral=True)
     await logMessage("MSG", f"Deleted: {number} Messages, \nfrom channel \{interaction.channel} \ndue to \n{interaction.user.global_name}.")
 
-async def logMessage(channel:str, msg: str):
+async def logMessage(guilID:int, channel:str, msg: str):
+    if guilID == logGuild:
+        return
     target_guild = bot.get_guild(logGuild)
     if target_guild:
         if channel == "DM":
@@ -217,19 +225,19 @@ async def logMessage(channel:str, msg: str):
     
 @bot.event
 async def on_message_delete(message: discord.Message):
-    await logMessage("MSG", f"Deleted: {message.content}, from channel {message.channel} due to {message.author.global_name}.")
+    await logMessage("MSG", f"Deleted: {message.content}, from channel {message.channel} due to {message.author.global_name} on {message.guild.name}.")
 @bot.event
 async def on_message_edit(before: discord.Message, after: discord.Message):
-    print("Message edited!")
-    await logMessage("MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name}.")
+    await logMessage(before.guild.id, "MSG", f"Edited: \n{before.content}, \n\nto: \n{after.content}, \nfrom channel {before.channel} due to {before.author.global_name} on {after.guild.name}.")
 @bot.event
 async def on_member_join(member: discord.Member):
-    await logMessage("USER", f"{member.global_name} joined the server.")
+    await logMessage(0, "USER", f"{member.global_name} joined {member.guild.name}.")
 @bot.event
 async def on_member_remove(member: discord.Member):
-    await logMessage("USER", f"{member.global_name} left the server.")
+    await logMessage(0, "USER", f"{member.global_name} left {member.guild.name}.")
 @bot.event
 async def on_member_update(before: discord.Member, after: discord.Member):
-    await logMessage("USER", f"{before.global_name} changed to {after.global_name}.")
+    if before.nick != after.nick:
+        await logMessage(0, "USER", f"{before.name} changed their nickname from {before.nick} to {after.nick} at {after.guild.name}.")
 
 bot.run(token[0])
